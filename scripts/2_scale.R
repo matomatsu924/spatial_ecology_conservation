@@ -30,13 +30,16 @@ library(scalescape)
 #Luego crear un raster de 6x6 donde se especifíquen las coordenadas mínimas y
 #máximas
 
-set.seed(16) #C
+set.seed(16)
 toy <- rast(ncol=6, nrow=6, xmin=1, xmax=6, ymin=1, ymax=6) #Crea el ráster y 
 #especifica sus dimensiones, sin valores
 values(toy) <- rpois(ncell(toy), lambda = 3) #Especifica los valores asumiendo
 #una distribución de Poisson. Lambda es el valor de la media.
-plot(toy)#Gráfica del raster
-text(toy, digits=2)#Muestra los valores dentro de la gráfica
+plot(toy)  #Gráfica del raster
+text(toy, digits=2)
+
+
+#Muestra los valores dentro de la gráfica
 writeRaster(toy, "raster/toy.tif", overwrite=TRUE) #Exportar el raster
 
 #Crear un nuevo raster (toy2) con una nueva organización de los valores 
@@ -47,9 +50,68 @@ toy2 <- toy
 values(toy2) <- 1:ncell(toy)
 plot(toy2)
 text(toy2, digits=2)
+
 writeRaster(toy2, "raster/toy2.tif", overwrite=TRUE)
 
+#Para modificar el tamaño del grano, se utiliza la función aggregate().
+#Los valores se pueden agregar por la media de los valores de las celdas o por
+#"regla de la mayoría".
+
+#Cuando se especifica el factor de agregación = 2, agrupa las celdas originales
+#de a 2 x 2 y obtiene su promedio (fun = "mean")
+
+toy_mean_2 <- aggregate(toy, fact=2, fun="mean")
+plot(toy_mean_2)
+text(toy_mean_2, digits=2)
+
+writeRaster(toy_mean_2, "raster/toy_mean_2.tif", overwrite=TRUE)
+
+#Cuando se especifica el factor de agregación = 3, agrupa las celdas originales
+#de a 3 x 3 y obtiene su promedio (fun = "mean")
+toy_mean_3 <- aggregate(toy, fact=3, fun= "mean")
+plot(toy_mean_3)
+text(toy_mean_3, digits=2)
+
+writeRaster(toy_mean_3, "raster/toy_mean_3.tif", overwrite=TRUE)
 
 
+#Exportar imagen
+
+png("images/agg_toy_mean.png", width = 20, height = 20, units="cm", res = 600)
+
+par(mfrow=c(2,2))
+plot(toy)  #Gráfica del raster
+text(toy, digits=2)
+plot(toy2)
+text(toy2, digits=2)
+plot(toy_mean_2)
+text(toy_mean_2, digits=2)
+plot(toy_mean_3)
+text(toy_mean_3, digits=2)
+
+dev.off() # Esto cierra y guarda el archivo
+par(mfrow = c(1, 1))
+
+#Regla de mayoría
+
+#Agrupado por 2
+
+toy_maj_2 <- aggregate(toy,fact=2, fun="modal")
+plot(toy_maj_2)
+text(toy_maj_2, digits=2)
 
 
+#Agrupado por 3
+
+toy_maj_3 <- aggregate(toy,fact=3, fun="modal")
+plot(toy_maj_3)
+text(toy_maj_3, digits=2)
+
+png("images/agg_toy_maj.png", width = 20, height = 10, units="cm", res = 600 )
+par(mfrow=c(1,2))
+plot(toy_maj_2)
+text(toy_maj_2, digits=2)
+plot(toy_maj_3)
+text(toy_maj_3, digits=2)
+dev.off() # Esto cierra y guarda el archivo
+par(mfrow = c(1, 1))
