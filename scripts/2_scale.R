@@ -115,3 +115,77 @@ plot(toy_maj_3)
 text(toy_maj_3, digits=2)
 dev.off() # Esto cierra y guarda el archivo
 par(mfrow = c(1, 1))
+
+#Es posible evaluar estadísticas descriptivas del raster mediante la función
+#global. En este caso, el raster original y el agregado tienen la misma media,
+#pero la varianza disminuye cuando se aumenta el tamaño del grano (agregado)
+global(toy,mean)
+global(toy,var)
+
+global(toy_mean_2,mean)
+global(toy_mean_2,var)
+
+
+#Desagregación
+
+#Se utiliza la función disagg para desagregar las celdas del raster. Existen
+#dos métodos. El primero por replicación (todos los valores originales se
+#repiten) y el segundo por interpolación bilinear (se toman valores de la media
+#ponderada por distancia en los ejes x y y). El primer método se utiliza para
+#variables categóricas y el segundo para variables continuas.
+
+
+#Raster original
+plot(toy)
+text(toy,digits=2)
+
+
+#Replicación
+toy_dis2 <- disagg(toy,fact=2)
+plot(toy_dis2)
+text(toy_dis2, digits=2)
+
+
+#Método bilinear
+#Nótese que se generan gradientes
+
+toy_dis2_bilin <- disagg(toy, fact=2, method="bilinear")
+plot(toy_dis2_bilin)
+text(toy_dis2_bilin, digits=2)
+
+#Exportar imagen de comparación
+png("images/desag_toy.png", width = 30, height = 12, units="cm", res=300)
+par(mfrow=c(1,3), mar=c(3,3,3,4))
+plot(toy)
+text(toy,digits=2, cex=0.8)
+plot(toy_dis2)
+text(toy_dis2, digits=2, cex=0.8)
+plot(toy_dis2_bilin)
+text(toy_dis2_bilin, digits=2, cex=0.8)
+dev.off()
+par(mfrow=c(1,1))
+
+#Es posible disminuir y aumentar el tamaño del raster mediante las funciones
+#crop y extent
+
+#Raster original
+plot(toy)
+text(toy,digits=2)
+
+
+e  <- ext(2,4,2,4) #Los argumentos son xmin,xmax,ymin,ymax. Primero se
+#define la extensión que se va a recortar
+toy_crop <- crop(toy,e) #Con la función crop, se especifica el raster original y 
+#la extensión que se va a recortar
+plot(toy_crop)
+text(toy_crop, digits=2)
+
+
+png("images/crop_toy.png", width = 30, height =10, units="cm", res=300)
+par(mfrow=c(1,2))
+plot(toy)
+text(toy,digits=2)
+plot(toy_crop)
+text(toy_crop, digits=2)
+dev.off()
+
