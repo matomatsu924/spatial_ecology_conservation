@@ -220,6 +220,7 @@ dev.off()
 
 b_forest1_1km <- crop(forest, b_site1_1km)  
 b_forest1_1km <- mask(b_forest1_1km, b_site1_1km)
+writeRaster(b_forest1_1km, "raster/b_forest_1km.tif")
 
 #Imagen comparativa crop vs mask
 png("images/crop_mask.png", width = 20, height = 10,
