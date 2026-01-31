@@ -250,3 +250,35 @@ ggplot() +
   theme_bw()
 
 ggsave("images/mask_landcover.png", plot=get_last_plot())
+
+################################################################################
+#Área de cada celda en hectáreas - g_area
+#Mediante la función res() se obtiene la resolución (tamaño de pixel) del
+#ráster. Este se eleva al cuadrado para pasar a área en m2 y se divide en
+#10000 para pasar a hectáreas
+
+g_area <- res(forest)[[1]]^2/10000
+g_area
+
+#Área de un buffer de 1 km.
+#Se utiliza la fórmula para calcular el área del círculo (pi por radio a la 2). 
+#El radio será el del buffer y se divide en 10000 para pasar a hectáreas.
+b_area <- (pi*b_1km^2)/10000
+b_area
+
+#Calculation of forest cover and %cover
+
+#A través de la función global se calcula la sumatoria de píxeles (Bosque).
+#Nótese que a esta función hay que removerle los valores NA con na.rm=T.
+#Luego este valor se multiplica por el área en hectáreas de cada píxel
+forest1_1km <- global(b_forest1_1km, sum, na.rm=T) * g_area
+forest1_1km
+
+forest1_1km_percent <- forest1_1km/b_area*100
+forest1_1km_percent
+
+#El 42.34% del área del cículo tiene bosque
+
+
+
+
